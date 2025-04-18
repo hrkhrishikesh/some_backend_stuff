@@ -1,15 +1,15 @@
 import dotenv from "dotenv"
 import connectDB from "./db/dbConnect.js";
-import app from "./app.js"
+import {app} from "./app.js"
 
-dotenv.config()
-
-//console.log("ENV = " , process.env.PORT , " ", process.env.MONGODB_URI );
+dotenv.config({
+    path : './.env'
+})
 
 connectDB()
 .then(() => {
     app.listen(process.env.PORT || 8000, ()=>{
-        console.log("Server Running");
+        console.log(`Server Running at ${process.env.PORT || 8000} `);
     })
 })
 .catch((err) => {
