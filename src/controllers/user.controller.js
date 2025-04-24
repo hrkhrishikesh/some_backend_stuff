@@ -132,8 +132,8 @@ const logoutUser = asyncHandler(async (req,res) => {
     await User.findByIdAndUpdate(
         req.user._id,
         {
-            $set: {
-                refreshToken : undefined,
+            $unset: {
+                refreshToken : 1,
             }
         },
         {
@@ -354,8 +354,8 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
             $project : {
                 fullName : 1,
                 username : 1,
-                subscribersCount,
-                channelsSubscribedToCount,
+                subscribersCount:1,
+                channelsSubscribedToCount:1,
                 avatar:1,
                 coverImage:1,
                 email: 1,
@@ -376,10 +376,10 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
 })
 
 const getWatchHistory = asyncHandler( async(req, res) => {
-    const user = User.aggregate([
+    const user = await User.aggregate([
         {
             $match: {
-                _id : /*new*/ mongoose.Types.ObjectId(req.user._id)
+                _id : new mongoose.Types.ObjectId(req.user._id)
             }
         },
         {
@@ -416,7 +416,11 @@ const getWatchHistory = asyncHandler( async(req, res) => {
                     ]
             }
         }
-    ])
+    ]);
+
+    if (!user || user.length === 0) {
+        throw new ApiError(404, "No watch history found");
+    }
 
     return res
         .status(200)
