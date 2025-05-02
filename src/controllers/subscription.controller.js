@@ -62,7 +62,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
 
 })
 
-// controller to get user subscribers
+// controller to get channels which the user has subscribed
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     
     const subscriberId = req.user._id;
